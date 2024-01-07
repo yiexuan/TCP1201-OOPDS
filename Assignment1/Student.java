@@ -16,32 +16,39 @@ public class Student extends User {
         for (Course course : courses) {
             System.out.println(course.courseCode);
         }
-        System.out.print("Please provide course that you want to register: ");
-        String selectedCourseCode = scanner.next().toUpperCase();
+        while (true) {
+            System.out.print("Please provide course that you want to register: ");
+            String selectedCourseCode = scanner.next().toUpperCase();
 
-        Course selectedCourse = findCourse(courses, selectedCourseCode);
+            Course selectedCourse = findCourse(courses, selectedCourseCode);
 
-        if (selectedCourse != null){        //&& !registeredCourses.contains(selectedCourseCode)) {
-            boolean studentAlreadyRegistered = registeredCourses.contains(selectedCourseCode);
-            if(!studentAlreadyRegistered){
-                registeredCourses.add(selectedCourseCode);
-                for (Lecturer assignedLecturer : selectedCourse.assignedLecturers) {                 
-                    studentAlreadyRegistered = assignedLecturer.studentsInCourse.contains(this);
-                    if (!studentAlreadyRegistered) {
-                        assignedLecturer.studentsInCourse.add(this);
+            if (selectedCourse != null) {
+                boolean studentAlreadyRegistered = registeredCourses.contains(selectedCourseCode);
+                if (!studentAlreadyRegistered) {
+                    registeredCourses.add(selectedCourseCode);
+                    for (Lecturer assignedLecturer : selectedCourse.assignedLecturers) {
+                        studentAlreadyRegistered = assignedLecturer.studentsInCourse.contains(this);
+                        if (!studentAlreadyRegistered) {
+                            assignedLecturer.studentsInCourse.add(this);
+                        }
                     }
+                    selectedCourse.studentsEnrolled.add(this);
+                    System.out.println("Course registered successfully.");
+                    System.out.println();
+                    break;
+                } else {
+                    System.out.println("Student already registered for the course "+selectedCourseCode+".");
+                    System.out.println();
+                    break;
                 }
-                selectedCourse.studentsEnrolled.add(this);
-                System.out.println("Course registered successfully.");
+
+            } else {
+                System.out.println("Invalid course selection.Please try again.");
+                System.out.println();
+                continue;
             }
-            else
-                System.out.println("Student already registered");
-            System.out.println();
-        } 
-        else {
-            System.out.println("Invalid course selection");
-            System.out.println();
         }
+
     }
 
     public void viewRegisteredCourses() {

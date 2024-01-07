@@ -24,7 +24,7 @@ public class Lecturer extends User {
         }
 
         if (!assignedToCourse) {
-            System.out.println("No Assigned Courses.");
+            System.out.println("No Assigned Courses.\n");
             return;
         }
 
@@ -49,8 +49,7 @@ public class Lecturer extends User {
             System.out.println();
         } 
         else {
-            System.out.println("Course not found or not assigned to you.");
-            System.out.println();
+            System.out.println("Course not found or not assigned to you.\n");
         }
     }
 

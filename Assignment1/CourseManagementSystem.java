@@ -1,6 +1,3 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -15,7 +12,7 @@ public class CourseManagementSystem {
         List<Lecturer> lecturers = new ArrayList<>();
         List<Course> courses = new ArrayList<>();
     
-        TestData.createTestData(admin, students, lecturers, courses);
+        TestData.createTestData(admin, students, lecturers);
         LoadCourse.loadCourse(courses);
 
         System.out.println("Welcome to Course Management System");
@@ -40,6 +37,7 @@ public class CourseManagementSystem {
                     }
                 } else {
                     System.out.println("Invalid credentials. Please try again.");
+                    System.out.println();
                     continue;
                 }
             }
@@ -51,7 +49,7 @@ public class CourseManagementSystem {
                 if (exitChoice.equals("yes")) {
                     System.out.println("Exiting. Thank you for using the Course Management System.");
                     System.out.println();
-                    break;
+                    return;
                 }
                 else if (exitChoice.equals("no")) {
                     System.out.println();
@@ -61,6 +59,7 @@ public class CourseManagementSystem {
                 }
                 else{
                     System.out.println("Invalid choice. Please enter 'yes' or 'no'.");
+                    System.out.println();
                 }
             }
         }
@@ -93,10 +92,6 @@ public class CourseManagementSystem {
                         System.out.println();
 
                         admin.createStudent(students);
-                        System.out.println("Updated list of students:");
-                        for (Student student : students) {
-                            System.out.println(student.userID);
-                        }
                         System.out.println();
                         break;
                     case 2:
@@ -106,10 +101,6 @@ public class CourseManagementSystem {
                         }
                         System.out.println();
                         admin.createLecturer(lecturers);
-                        System.out.println("Updated list of Lecturers:");
-                        for (Lecturer lecturer : lecturers) {
-                            System.out.println(lecturer.userID);
-                        }
                         System.out.println();
                         break;
                     case 3:
@@ -119,13 +110,11 @@ public class CourseManagementSystem {
                         }
                         System.out.println();
                         admin.createCourse(courses);
-                        System.out.println("Updated list of course:");
-                        for (Course course : courses) {
-                            System.out.println(course.courseCode);
-                        }
                         System.out.println();
                         break;
                     case 4:
+                    // for (Lecturer lecturer : lecturers) {
+                    //     System.out.println(lecturer.userID);}
                         admin.assignCourseToLecturer(courses, lecturers);
                         break;
                     case 5:
@@ -136,9 +125,11 @@ public class CourseManagementSystem {
                         return;
                     default:
                         System.out.println("Invalid choice. Try again.");
+                        System.out.println();
+                        break;
                 }
             }catch (InputMismatchException e){
-                System.out.println("Invalid choice. Error: Input must be a number");
+                System.out.println("Invalid choice. Error: Input must be a number\n");
                 scanner.nextLine();
             }
         }
@@ -170,9 +161,11 @@ public class CourseManagementSystem {
                         return;
                     default:
                         System.out.println("Invalid choice. Try again.");
+                        System.out.println();
+                        break;
                 }
             }catch (InputMismatchException e){
-                System.out.println("Invalid choice. Error: Input must be a number");
+                System.out.println("Invalid choice. Error: Input must be a number\n");
                 scanner.nextLine();
             }
         }
@@ -200,9 +193,11 @@ public class CourseManagementSystem {
                         return;
                     default:
                         System.out.println("Invalid choice. Try again.");
+                        System.out.println();
+                        break;
                 }
             }catch (InputMismatchException e){
-                System.out.println("Invalid choice. Error: Input must be a number");
+                System.out.println("Invalid choice. Error: Input must be a number\n");
                 scanner.nextLine();
             }
         }
