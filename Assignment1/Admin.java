@@ -87,51 +87,6 @@ public class Admin extends User {
         }
     }
 
-    // public void assignCourseToLecturer(List<Course> courses, List<Lecturer> lecturers) {
-        
-    //     if (courses.isEmpty() || lecturers.isEmpty()) {
-    //         System.out.println("No courses or lecturers available.");
-    //         return;
-    //     }
-
-    //     System.out.println("List of Courses:");
-    //     for (Course course : courses) {
-    //         System.out.println(course.courseCode);
-    //     }
-
-    //     Scanner scanner = new Scanner(System.in);
-    //     System.out.print("Select a Course Code: ");
-    //     String courseCode = scanner.next().toUpperCase();
-
-    //     Course selectedCourse = findCourse(courses, courseCode);
-
-    //     if (selectedCourse != null) {
-
-    //         System.out.println("List of Lecturers:");
-    //         for (Lecturer lecturer : lecturers) 
-    //             System.out.println(lecturer.userID);
-
-    //         System.out.print("Select a Lecturer ID: ");
-    //         String lecturerID = scanner.next();
-
-    //         Lecturer selectedLecturer = findLecturer(lecturers, lecturerID);
-
-    //         boolean lecturerAlreadyAssigned = selectedCourse.assignedLecturers.contains(selectedLecturer);
-
-    //             if (selectedLecturer != null) {
-    //                 boolean lecturerAlreadyAssigned = selectedCourse.assignedLecturers.contains(selectedLecturer);
-    //                 if (!lecturerAlreadyAssigned) {
-    //                     selectedCourse.assignedLecturers.add(selectedLecturer);
-    //                     System.out.println("A course has been assigned to Lecturer " + lecturerID);
-    //                     System.out.println();
-    //                 } else {
-    //                     System.out.println("Course already assigned to this lecturer");
-    //                     System.out.println();
-    //                 }
-    //             } else {
-    //                 System.out.println("Lecturer not found.");
-    //                 System.out.println();
-    //             }
                 public void assignCourseToLecturer(List<Course> courses, List<Lecturer> lecturers) {
                     if (courses.isEmpty() || lecturers.isEmpty()) {
                         System.out.println("No courses or lecturers available.");
