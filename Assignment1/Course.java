@@ -4,7 +4,6 @@ import java.util.List;
 public class Course {
     String courseCode;
     int credits;
-    String assignedLecturer;
     List<String> prerequisites;
     List<Lecturer> assignedLecturers;
     List<Student> studentsEnrolled;

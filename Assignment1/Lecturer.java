@@ -12,10 +12,10 @@ public class Lecturer extends User {
 
     public void viewStudentsInCourses(List<Course> courses) {
         Scanner scanner = new Scanner(System.in);
-
+       while(true){
         System.out.println("Courses Assigned to " + this.userID + ":");
         boolean assignedToCourse = false;
-
+       
         for (Course course : courses) {
             if (course.assignedLecturers.contains(this)) {
                 assignedToCourse = true;
@@ -50,7 +50,9 @@ public class Lecturer extends User {
         } 
         else {
             System.out.println("Course not found or not assigned to you.\n");
+            continue;
         }
+    }
     }
 
     public Course findCourse(List<Course> courses, String courseCode) {

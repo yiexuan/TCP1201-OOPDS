@@ -19,7 +19,6 @@ public class LoadCourse {
                     for (int n = 2; n < values.length; n++) {
                         String[] prerequisitesArray = values[n].replaceAll("^\"|\"$", "").split(",");
                         for (String prerequisite : prerequisitesArray) {
-                            // cs = Arrays.asList(prerequisite);
                             // System.out.println(prerequisite);
                             cs.add(prerequisite.trim());
 
@@ -33,12 +32,6 @@ public class LoadCourse {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        //test result
-        for (Course course : courses) {
-            System.out.println(course.courseCode + " " + course.credits + " " + course.prerequisites);
-
         }
     }
 }
