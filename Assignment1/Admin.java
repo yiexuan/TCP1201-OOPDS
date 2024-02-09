@@ -82,10 +82,10 @@ public class Admin extends User {
                 System.out.print("Course Credit: ");
                 int newCourseCredit = scanner.nextInt();
                 System.out.print("Prerequisite (comma-separated, enter 'Nil' for if no prerequisite): ");
-                String[] prereqs = scanner.next().split(",");
-                Set<String> prerequisites = new HashSet<>(Arrays.asList(prereqs));
-                Course newCourse = new Course(newCourseCredit, newCourseCode, prerequisites);
-                courses.add(newCourse);
+                // String[] prereqs = scanner.next().split(",");
+                // Set<String> prerequisites = new HashSet<>(Arrays.asList(prereqs));
+                // Course newCourse = new Course(newCourseCredit, newCourseCode, prerequisites);
+                //courses.add(newCourse);
                 System.out.println("A new course has been created.");
                 System.out.println("Updated list of course:");
                 for (Course course : courses) {
