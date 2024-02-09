@@ -1,19 +1,32 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Course {
-    String courseCode;
     int credits;
-    List<String> prerequisites;
-    List<Lecturer> assignedLecturers;
-    List<Student> studentsEnrolled;
+    String courseCode;
+    String prerequisites;
+    Lecturer assignedLecturer;
+    List<Student> studentsEnrolled = new ArrayList<>();
 
-    public Course(String courseCode, int credits, List<String> prerequisites) {
-        this.courseCode = courseCode;
+    public Course(int credits, String courseCode, String prerequisites) {
         this.credits = credits;
+        this.courseCode = courseCode;
         this.prerequisites = prerequisites;
-        this.assignedLecturers = new ArrayList<>();
         this.studentsEnrolled = new ArrayList<>();
+    }
+    public String toCSVString() {
+        String lecturerID = (assignedLecturer != null) ? assignedLecturer.userID : "";
+        // String prerequisitesString = String.join(",", prerequisites);
+        // // Enclose prerequisites in double quotes
+        // if (!prerequisitesString.isEmpty()) {
+        //     prerequisitesString = "\"" + prerequisitesString + "\"";
+        // }
+        return credits + "," + courseCode + "," + prerequisites + "," + lecturerID;
     }
 }
 

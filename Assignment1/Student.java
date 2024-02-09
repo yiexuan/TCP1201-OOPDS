@@ -1,16 +1,18 @@
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public class Student extends User {
-    List<String> registeredCourses;
+    Set<String> registeredCourses = new LinkedHashSet<>();
 
     public Student(String userID, String password) {
         super(userID, password);
-        this.registeredCourses = new ArrayList<>();
+        this.registeredCourses = new LinkedHashSet<>();
     }
 
-    void registerCourse(List<Course> courses) {
+    void registerCourse(Set<Course> courses) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("List of Course Code:");
         for (Course course : courses) {
@@ -25,18 +27,17 @@ public class Student extends User {
             if (selectedCourse != null) {
                 boolean studentAlreadyRegistered = registeredCourses.contains(selectedCourseCode);
                 if (!studentAlreadyRegistered) {
-                    registeredCourses.add(selectedCourseCode);
-                    for (Lecturer assignedLecturer : selectedCourse.assignedLecturers) {
-                        studentAlreadyRegistered = assignedLecturer.studentsInCourse.contains(this);
-                        if (!studentAlreadyRegistered) {
-                            assignedLecturer.studentsInCourse.add(this);
-                        }
-                    }
+                    registeredCourses.add(selectedCourseCode); 
+                    studentAlreadyRegistered = selectedCourse.studentsEnrolled.contains(this);
+                    studentAlreadyRegistered = selectedCourse.assignedLecturer.studentsInCourse.contains(this);                    
+                    if (!studentAlreadyRegistered) 
+                        selectedCourse.assignedLecturer.studentsInCourse.add(this);
                     selectedCourse.studentsEnrolled.add(this);
                     System.out.println("Course registered successfully.");
                     System.out.println();
                     break;
-                } else {
+                } 
+                else {
                     System.out.println("Student already registered for the course "+selectedCourseCode+".");
                     System.out.println();
                     break;
@@ -59,7 +60,7 @@ public class Student extends User {
         System.out.println();
     }
 
-    public Course findCourse(List<Course> courses, String courseCode) {
+    public Course findCourse(Set<Course> courses, String courseCode) {
         for (Course course : courses) {
             if (course.courseCode.equals(courseCode)) {
                 return course;

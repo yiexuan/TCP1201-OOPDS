@@ -1,19 +1,30 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.InputMismatchException;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class CourseManagementSystem {
+    static String userFilename = "user.csv";
+    static String courseFilename = "course.csv";
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         Admin admin = new Admin("admin", "adminpass");
-        List<Student> students = new ArrayList<>();
-        List<Lecturer> lecturers = new ArrayList<>();
-        List<Course> courses = new ArrayList<>();
+        Map<String, Student> students = readUsersFromFile("student");
+        Map<String, Lecturer> lecturers = readUsersFromFile("lecturer");
+        Set<Course> courses = readCourseFromFile(lecturers);
     
-        TestData.createTestData(admin, students, lecturers);
-        LoadCourse.loadCourse(courses);
+        // TestData.createTestData(admin, students, lecturers);
+        // LoadCourse.loadCourse(courses);
 
         System.out.println("Welcome to Course Management System");
         while (true) {
@@ -65,8 +76,8 @@ public class CourseManagementSystem {
         }
     }
 
-    public static void handleAdminActions(Admin admin, List<Student> students, List<Lecturer> lecturers,
-            List<Course> courses) {
+    public static void handleAdminActions(Admin admin, Map<String, Student> students, Map<String, Lecturer> lecturers,
+            Set<Course> courses) {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -86,21 +97,21 @@ public class CourseManagementSystem {
                 switch (choice) {
                     case 1:
                         System.out.println("Current list of students:");
-                        for (Student student : students) {
-                            System.out.println(student.userID);
+                        for (String userID : students.keySet()) {
+                            System.out.println(userID);
                         }
                         System.out.println();
 
-                        admin.createStudent(students);
+                        admin.createStudent(students, lecturers);
                         System.out.println();
                         break;
                     case 2:
                         System.out.println("Current list of Lecturers:");
-                        for (Lecturer lecturer : lecturers) {
-                            System.out.println(lecturer.userID);
+                        for (String userID: lecturers.keySet()) {
+                            System.out.println(userID);
                         }
                         System.out.println();
-                        admin.createLecturer(lecturers);
+                        admin.createLecturer(lecturers, students);
                         System.out.println();
                         break;
                     case 3:
@@ -135,7 +146,7 @@ public class CourseManagementSystem {
         }
     }
 
-    public static void handleStudentActions(Student student, List<Course> courses) {
+    public static void handleStudentActions(Student student, Set<Course> courses) {
         Scanner scanner = new Scanner(System.in);
         
         while (true) {
@@ -171,7 +182,7 @@ public class CourseManagementSystem {
         }
     }
 
-    public static void handleLecturerActions(Lecturer lecturer, List<Course> courses) {
+    public static void handleLecturerActions(Lecturer lecturer, Set<Course> courses) {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -203,18 +214,102 @@ public class CourseManagementSystem {
         }
     }
 
-    public static User findUser(String userID, String password, List<Student> students, List<Lecturer> lecturers) {
-        for (Student student : students) {
-            if (student.userID.equals(userID) && student.password.equals(password)) {
+    public static User findUser(String userID, String password, Map<String, Student> students, Map<String, Lecturer> lecturers) {
+        Student student = students.get(userID);     //check if the ID exist in the map
+            if (student != null && student.password.equals(password)) {
                 return student;
             }
-        }
 
-        for (Lecturer lecturer : lecturers) {
-            if (lecturer.userID.equals(userID) && lecturer.password.equals(password)) {
+        Lecturer lecturer = lecturers.get(userID); 
+            if (lecturer != null && lecturer.password.equals(password)) {
                 return lecturer;
             }
-        }
         return null;
     }
+
+    private static <E extends User> Map<String, E> readUsersFromFile(String userType) {
+        Map<String, E> users = new HashMap<>();
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(userFilename));
+            for (String line : lines) {
+                String[] items = line.split(",");
+                String id = items[0];
+                if (items[2].equals(userType)) {
+                    if (userType.equals("student")) {
+                        users.put(id, (E) new Student(id, items[1]));
+                    } else if (userType.equals("lecturer")) {
+                        users.put(id, (E) new Lecturer(id, items[1]));
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return users;
+    }
+    // private static Set<Course> readCourseFromFile(Map<String, Lecturer> lecturers) {
+    //     Set<Course> courses = new LinkedHashSet<>();
+    //     try {
+    //       List<String> lines = Files.readAllLines(Paths.get(courseFilename));
+    //       for (int i = 0; i < lines.size(); i++) {
+    //         String[] items = lines.get(i).split(",");
+    
+    //         int credits = Integer.parseInt(items[0]);
+    //         String courseCode = items[1];
+     
+    //         Set<String> prerequisites = new LinkedHashSet<>();
+    //         for (int n = 2; n < items.length; n++) {
+    //             String[] prerequisitesArray = items[n].replaceAll("^\"|\"$", "").split(",");
+    //         for (String prerequisite : prerequisitesArray) {
+    //             prerequisites.add(prerequisite.trim());
+    //         }
+    //         }
+    //         System.out.println(prerequisites);
+    //         // Check if lecturer is provided
+    //         Lecturer assignedLecturer = null;
+    //         if (items.length > 3 && !items[3].isEmpty()) {
+    //             assignedLecturer = lecturers.get(items[3]);
+    //         }
+    //         System.out.println(assignedLecturer);
+    //         //Lecturer assignedLecturer = lecturers.get(items[3]);
+    //         List<Student> studentsEnrolled = new ArrayList<>();
+    //         Course course = new Course(credits, courseCode, prerequisites);
+    //         courses.add(course);
+    //       }
+    //     } catch (IOException ex) {
+    //       System.out.println(ex.getMessage());
+    //     }
+    //     return courses;
+    // }
+    private static Set<Course> readCourseFromFile(Map<String, Lecturer> lecturers) {
+    Set<Course> courses = new LinkedHashSet<>();
+    try {
+        List<String> lines = Files.readAllLines(Paths.get(courseFilename));
+        for (String line : lines) {
+            // String[] items;
+            // items = line.split(",");
+            String[] items = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+
+            int credits = Integer.parseInt(items[0]);
+            String courseCode = items[1];
+
+            String tempPrerequisites = items[2];
+                System.out.println(tempPrerequisites);
+            // Check if lecturer is provided
+            Lecturer assignedLecturer;
+            if (items.length > 3 && !items[3].isEmpty()) {
+                assignedLecturer = lecturers.get(items[3]);
+            }
+            //System.out.println(assignedLecturer);
+
+            List<Student> studentsEnrolled = new ArrayList<>();
+            Course course = new Course(credits, courseCode, tempPrerequisites);
+            courses.add(course);
+        }
+    } catch (IOException ex) {
+        System.out.println(ex.getMessage());
+    }
+    return courses;
+}
+
 }

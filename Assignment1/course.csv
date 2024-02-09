@@ -1,9 +1,8 @@
-3,CS113,Nil
-3,CS123,Nil
-3,CS133,Nil
-3,CS143,Nil
-4,CS214,CS113
-4,CS224,CS123
-4,CS234,Nil
-6,CS316,"CS133,CS214,completed at least 15 credits"
-
+3,CS113,"Nil",lec002
+3,CS123,"Nil",
+3,CS133,"Nil",
+3,CS143,"Nil",
+4,CS214,"CS113",
+4,CS224,"CS123",
+4,CS234,"Nil",
+6,CS316,"CS133,CS214,completed at least 15 credits",

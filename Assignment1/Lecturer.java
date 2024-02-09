@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Lecturer extends User {
     List<Student> studentsInCourse;
@@ -10,14 +11,19 @@ public class Lecturer extends User {
         this.studentsInCourse = new ArrayList<>();
     }
 
-    public void viewStudentsInCourses(List<Course> courses) {
+    @Override
+    public String toString() {
+        return userID; // Assuming userID is the unique identifier for a Lecturer
+    }
+    
+    public void viewStudentsInCourses(Set<Course> courses) {
         Scanner scanner = new Scanner(System.in);
-       while(true){
+        while(true){
         System.out.println("Courses Assigned to " + this.userID + ":");
         boolean assignedToCourse = false;
        
         for (Course course : courses) {
-            if (course.assignedLecturers.contains(this)) {
+            if (course.assignedLecturer.equals(this)) {
                 assignedToCourse = true;
                 System.out.println(course.courseCode);
             }
@@ -35,9 +41,8 @@ public class Lecturer extends User {
 
         if (course != null) {
             System.out.println("Student List for Course " + courseCode + ":");
-            for (Lecturer assignedLecturer : course.assignedLecturers) {
-                if (assignedLecturer.equals(this)) {
-                    for (Student student : assignedLecturer.studentsInCourse) {
+                if (course.assignedLecturer.equals(this)) {
+                    for (Student student : this.studentsInCourse) {
                         if (student.registeredCourses.contains(courseCode)) {
                             System.out.println(student.userID);
                         }
@@ -45,17 +50,16 @@ public class Lecturer extends User {
                     System.out.println();
                     return;
                 }
-            }
             System.out.println();
         } 
         else {
             System.out.println("Course not found or not assigned to you.\n");
             continue;
         }
-    }
+        }
     }
 
-    public Course findCourse(List<Course> courses, String courseCode) {
+    public Course findCourse(Set<Course> courses, String courseCode) {
         for (Course course : courses) {
             if (course.courseCode.equals(courseCode)) {
                 return course;

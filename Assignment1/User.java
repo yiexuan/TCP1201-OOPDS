@@ -6,4 +6,14 @@ public class User {
         this.userID = userID;
         this.password = password;
     }
+
+    public String toCSVString() {
+        String userType = "user";
+        if (this instanceof Student) {
+            userType = "student";
+        } else if (this instanceof Lecturer) {
+            userType = "lecturer";
+        }
+        return userID + "," + password + "," + userType;
+    }
 }
