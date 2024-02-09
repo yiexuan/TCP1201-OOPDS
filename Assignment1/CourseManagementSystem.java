@@ -21,7 +21,7 @@ public class CourseManagementSystem {
         Admin admin = new Admin("admin", "adminpass");
         Map<String, Student> students = readUsersFromFile("student");
         Map<String, Lecturer> lecturers = readUsersFromFile("lecturer");
-        Set<Course> courses = new LinkedHashSet<>();
+        Set<Course> courses = readCourseFromFile(lecturers);
         // readCourseFromFile(lecturers);
     
         // TestData.createTestData(admin, students, lecturers);
@@ -287,9 +287,9 @@ public class CourseManagementSystem {
     try {
         List<String> lines = Files.readAllLines(Paths.get(courseFilename));
         for (String line : lines) {
-             String[] items;
-             items = line.split(",");
-            //String[] items = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+            //  String[] items;
+            //  items = line.split(",");
+            String[] items = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
             int credits = Integer.parseInt(items[0]);
             String courseCode = items[1];
@@ -301,7 +301,7 @@ public class CourseManagementSystem {
             if (items.length > 3 && !items[3].isEmpty()) {
                 assignedLecturer = lecturers.get(items[3]);
             }
-            //System.out.println(assignedLecturer);
+            System.out.println(assignedLecturer);
 
             List<Student> studentsEnrolled = new ArrayList<>();
             Course course = new Course(credits, courseCode, tempPrerequisites);
@@ -312,5 +312,4 @@ public class CourseManagementSystem {
     }
     return courses;
 }
-
 }

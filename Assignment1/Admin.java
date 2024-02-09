@@ -5,6 +5,7 @@ import java.util.Set;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class Admin extends User {
         while (true) {
             System.out.print("New student ID: ");
             String newStudentID = scanner.next().toLowerCase();
-            if (isUserIDTaken(newStudentID, students, lecturers)) {
+            if (isUserIDTaken(newStudentID, students, lecturers) && isStudentExist(newStudentID)) {
                 System.out.println("Student ID already exists. Please choose a different ID.");
                 System.out.println();
                 continue;
@@ -31,6 +32,7 @@ public class Admin extends User {
                 Student newStudent = new Student(newStudentID, newStudentPassword);
                 students.put(newStudentID, newStudent);
                 saveUserToFile(students, lecturers);
+                saveStudentToFile(newStudent);
                 System.out.println("A new student has been created.");
                 System.out.println();
                 System.out.println("Updated list of students:");
@@ -85,7 +87,7 @@ public class Admin extends User {
                 // String[] prereqs = scanner.next().split(",");
                 // Set<String> prerequisites = new HashSet<>(Arrays.asList(prereqs));
                 // Course newCourse = new Course(newCourseCredit, newCourseCode, prerequisites);
-                //courses.add(newCourse);
+                // courses.add(newCourse);
                 System.out.println("A new course has been created.");
                 System.out.println("Updated list of course:");
                 for (Course course : courses) {
@@ -142,7 +144,7 @@ public class Admin extends User {
                 validLecturer = true;
                 if (selectedCourse.assignedLecturer == null) {
                     selectedCourse.assignedLecturer = selectedLecturer;
-                    
+
                     // courses.add(selectedCourse);
                     saveCourseToFile(courses);
                     System.out.println("A course has been assigned to Lecturer " + lecturerID + "\n");
@@ -222,40 +224,66 @@ public class Admin extends User {
     }
 
     private static void saveUserToFile(Map<String, Student> students, Map<String, Lecturer> lecturers) {
-    Map<String, User> users = new HashMap<>();
-    users.putAll(students);
-    users.putAll(lecturers);
+        Map<String, User> users = new HashMap<>();
+        users.putAll(students);
+        users.putAll(lecturers);
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, ? extends User> entry : users.entrySet()) {
+            sb.append(entry.getValue().toCSVString()).append("\n");
+        }
+        try {
+            Files.write(Paths.get(CourseManagementSystem.userFilename), sb.toString().getBytes());
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
 
+    private static void saveStudentToFile(Student student) {
     StringBuilder sb = new StringBuilder();
-    for (Map.Entry<String, ? extends User> entry : users.entrySet()) {
-      sb.append(entry.getValue().toCSVString()).append("\n");
-    }
+    sb.append(student.userID).append(",\n");
     try {
-      Files.write(Paths.get(CourseManagementSystem.userFilename), sb.toString().getBytes());
+        Files.write(Paths.get("student.csv"), sb.toString().getBytes(), StandardOpenOption.APPEND);
     } catch (IOException ex) {
-      System.out.println(ex.getMessage());
-    }
-  }
-  private static void saveCourseToFile(Set<Course> courses) {
-    StringBuilder sb = new StringBuilder();
-    for (Course course: courses){
-        System.out.println(course.prerequisites);
-    }
-    for (Course course : courses) {
-      sb.append(course.toCSVString()).append("\n");
-    }
-    try {
-      Files.write(Paths.get(CourseManagementSystem.courseFilename), sb.toString().getBytes());
-    } catch (IOException ex) {
-      System.out.println(ex.getMessage());
+        System.out.println(ex.getMessage());
     }
 }
-//     for (int i = 0; i < students.size(); i++)
-//       sb.append(students.get(i).toCSVString() + "\n");
-//     try {
-//       Files.write(Paths.get(CourseManagementSystem.courseFilename), sb.toString().getBytes());
-//     } catch (IOException ex) {
-//       System.out.println(ex.getMessage());
-//     }
-//   }
+
+    private boolean isStudentExist(String studentID) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get("student.csv"));
+            for (String line : lines) {
+                String[] items = line.split(",");
+                if (items[0].equals(studentID)) {
+                    return true;
+                }
+            }
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return false;
+    }
+
+    private static void saveCourseToFile(Set<Course> courses) {
+        StringBuilder sb = new StringBuilder();
+        for (Course course : courses) {
+            System.out.println(course.prerequisites);
+        }
+        for (Course course : courses) {
+            sb.append(course.toCSVString()).append("\n");
+        }
+        try {
+            Files.write(Paths.get(CourseManagementSystem.courseFilename), sb.toString().getBytes());
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    // for (int i = 0; i < students.size(); i++)
+    // sb.append(students.get(i).toCSVString() + "\n");
+    // try {
+    // Files.write(Paths.get(CourseManagementSystem.courseFilename),
+    // sb.toString().getBytes());
+    // } catch (IOException ex) {
+    // System.out.println(ex.getMessage());
+    // }
+    // }
 }
