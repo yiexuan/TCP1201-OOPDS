@@ -21,7 +21,7 @@ public class CourseManagementSystem {
         Admin admin = new Admin("admin", "adminpass");
         Map<String, Student> students = readUsersFromFile("student");
         Map<String, Lecturer> lecturers = readUsersFromFile("lecturer");
-        Set<Course> courses = readCourseFromFile(lecturers);
+        Set<Course> courses = readCourseFromCourseFile();
         // readCourseFromFile(lecturers);
     
         // TestData.createTestData(admin, students, lecturers);
@@ -94,6 +94,7 @@ public class CourseManagementSystem {
                 System.out.print("Please enter your choice: ");
                 int choice = scanner.nextInt();
                 System.out.println();
+                courses = readCourseFromCourseFile();
 
                 switch (choice) {
                     case 1:
@@ -160,6 +161,7 @@ public class CourseManagementSystem {
                 System.out.print("Please enter your choice: ");
                 int choice = scanner.nextInt();
                 System.out.println();
+                courses = readCourseFromCourseFile();
 
                 switch (choice) {
                     case 1:
@@ -195,6 +197,7 @@ public class CourseManagementSystem {
                 System.out.print("Please enter your choice: ");
                 int choice = scanner.nextInt();
                 System.out.println();
+                courses = readCourseFromCourseFile();
 
                 switch (choice) {
                     case 1:
@@ -282,7 +285,7 @@ public class CourseManagementSystem {
     //     }
     //     return courses;
     // }
-    private static Set<Course> readCourseFromFile(Map<String, Lecturer> lecturers) {
+    public static Set<Course> readCourseFromCourseFile() {
     Set<Course> courses = new LinkedHashSet<>();
     try {
         List<String> lines = Files.readAllLines(Paths.get(courseFilename));
@@ -297,11 +300,11 @@ public class CourseManagementSystem {
             String tempPrerequisites = items[2];
                 System.out.println(tempPrerequisites);
             // Check if lecturer is provided
-            Lecturer assignedLecturer = null;
-            if (items.length > 3 && !items[3].isEmpty()) {
-                assignedLecturer = lecturers.get(items[3]);
-            }
-            System.out.println(assignedLecturer);
+            // Lecturer assignedLecturer = null;
+            // if (items.length > 3 && !items[3].isEmpty()) {
+            //     assignedLecturer = lecturers.get(items[3]);
+            // }
+            // System.out.println(assignedLecturer);
 
             List<Student> studentsEnrolled = new ArrayList<>();
             Course course = new Course(credits, courseCode, tempPrerequisites);
@@ -312,4 +315,5 @@ public class CourseManagementSystem {
     }
     return courses;
 }
+
 }

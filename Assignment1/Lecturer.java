@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -66,5 +69,33 @@ public class Lecturer extends User {
             }
         }
         return null;
+    }
+
+    public static void addCourseToLecturerFile(String lecturerId, Course course) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get("lecturer.csv"));
+            List<String> updatedLines = new ArrayList<>();
+
+            // Iterate through each line in the file
+            for (String line : lines) {
+                String[] parts = line.split(","); // Split the line by comma
+                
+                // Check if the first part (lecturer ID) matches the given lecturerId
+                if (parts.length > 0 && parts[0].equals(lecturerId)) {
+                    // Append the course code to the current line
+                    StringBuilder updatedLine = new StringBuilder(line);
+                    updatedLine.append(course.courseCode).append(",");
+                    updatedLines.add(updatedLine.toString());
+                } else {
+                    updatedLines.add(line); // Keep the line unchanged
+                }
+            }
+
+            // Write the updated content back to the file
+            Files.write(Paths.get("lecturer.csv"), updatedLines);
+            System.out.println("Course added successfully for lecturer: " + lecturerId);
+        } catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 }

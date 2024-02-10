@@ -59,6 +59,7 @@ public class Admin extends User {
                 Lecturer newLecturer = new Lecturer(newLecturerID, newLecturerPassword);
                 lecturers.put(newLecturerID, newLecturer);
                 saveUserToFile(students, lecturers);
+                saveLecturerToFile(newLecturer);
                 System.out.println("A new lecturer has been created.");
                 System.out.println();
                 System.out.println("Updated list of Lecturers:");
@@ -84,10 +85,13 @@ public class Admin extends User {
                 System.out.print("Course Credit: ");
                 int newCourseCredit = scanner.nextInt();
                 System.out.print("Prerequisite (comma-separated, enter 'Nil' for if no prerequisite): ");
+                scanner.nextLine();
+                String prerequisites = scanner.nextLine();
                 // String[] prereqs = scanner.next().split(",");
                 // Set<String> prerequisites = new HashSet<>(Arrays.asList(prereqs));
-                // Course newCourse = new Course(newCourseCredit, newCourseCode, prerequisites);
+                Course newCourse = new Course(newCourseCredit, newCourseCode, prerequisites);
                 // courses.add(newCourse);
+                addCourseToCourseFile(newCourse);
                 System.out.println("A new course has been created.");
                 System.out.println("Updated list of course:");
                 for (Course course : courses) {
@@ -146,7 +150,8 @@ public class Admin extends User {
                     selectedCourse.assignedLecturer = selectedLecturer;
 
                     // courses.add(selectedCourse);
-                    saveCourseToFile(courses);
+                    //saveCourseToCourseFile(courses);
+                    addCourseToLecturerFile(selectedLecturer.userID, selectedCourse);
                     System.out.println("A course has been assigned to Lecturer " + lecturerID + "\n");
                 } else if (selectedCourse.assignedLecturer.equals(selectedLecturer))
                     System.out.println("Course already assigned to this lecturer\n");
@@ -239,14 +244,39 @@ public class Admin extends User {
     }
 
     private static void saveStudentToFile(Student student) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(student.userID).append(",\n");
-    try {
-        Files.write(Paths.get("student.csv"), sb.toString().getBytes(), StandardOpenOption.APPEND);
-    } catch (IOException ex) {
-        System.out.println(ex.getMessage());
+        StringBuilder sb = new StringBuilder();
+        sb.append(student.userID).append(",0,\n");
+        try {
+            Files.write(Paths.get("student.csv"), sb.toString().getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
-}
+
+    private static void saveLecturerToFile(Lecturer lecturer) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(lecturer.userID).append(",\n");
+        try {
+            Files.write(Paths.get("lecturer.csv"), sb.toString().getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private static void addCourseToCourseFile(Course course) {
+        StringBuilder sb = new StringBuilder();
+        String temp = "";
+        temp = course.prerequisites;
+        course.prerequisites = "\"" + temp + "\"";
+        // error here, unable to run
+        
+        sb.append(course.toCSVString()).append("\n");
+        try {
+            Files.write(Paths.get(CourseManagementSystem.courseFilename), sb.toString().getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
 
     private boolean isStudentExist(String studentID) {
         try {
@@ -263,20 +293,23 @@ public class Admin extends User {
         return false;
     }
 
-    private static void saveCourseToFile(Set<Course> courses) {
-        StringBuilder sb = new StringBuilder();
-        for (Course course : courses) {
-            System.out.println(course.prerequisites);
-        }
-        for (Course course : courses) {
-            sb.append(course.toCSVString()).append("\n");
-        }
-        try {
-            Files.write(Paths.get(CourseManagementSystem.courseFilename), sb.toString().getBytes());
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
+    // remove this method //
+    // private static void saveCourseToCourseFile(Set<Course> courses) {
+    //     StringBuilder sb = new StringBuilder();
+    //     for (Course course : courses) {
+    //         System.out.println(course.prerequisites);
+    //     }
+    //     for (Course course : courses) {
+    //         sb.append(course.toCSVString()).append("\n");
+    //     }
+    //     try {
+    //         Files.write(Paths.get(CourseManagementSystem.courseFilename), sb.toString().getBytes());
+    //     } catch (IOException ex) {
+    //         System.out.println(ex.getMessage());
+    //     }
+    // }
+
+
     // for (int i = 0; i < students.size(); i++)
     // sb.append(students.get(i).toCSVString() + "\n");
     // try {
@@ -286,4 +319,31 @@ public class Admin extends User {
     // System.out.println(ex.getMessage());
     // }
     // }
+    public static void addCourseToLecturerFile(String lecturerId, Course course) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get("lecturer.csv"));
+            List<String> updatedLines = new ArrayList<>();
+
+            // Iterate through each line in the file
+            for (String line : lines) {
+                String[] parts = line.split(","); // Split the line by comma
+                
+                // Check if the first part (lecturer ID) matches the given lecturerId
+                if (parts.length > 0 && parts[0].equals(lecturerId)) {
+                    // Append the course code to the current line
+                    StringBuilder updatedLine = new StringBuilder(line);
+                    updatedLine.append(course.courseCode).append(",");
+                    updatedLines.add(updatedLine.toString());
+                } else {
+                    updatedLines.add(line); // Keep the line unchanged
+                }
+            }
+
+            // Write the updated content back to the file
+            Files.write(Paths.get("lecturer.csv"), updatedLines);
+            System.out.println("Course added successfully for lecturer: " + lecturerId);
+        } catch (IOException e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
 }

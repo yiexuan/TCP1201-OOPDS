@@ -20,13 +20,13 @@ public class Course {
         this.studentsEnrolled = new ArrayList<>();
     }
     public String toCSVString() {
-        String lecturerID = (assignedLecturer != null) ? assignedLecturer.userID : "";
+        // String lecturerID = (assignedLecturer != null) ? assignedLecturer.userID : "";
         // String prerequisitesString = String.join(",", prerequisites);
         // // Enclose prerequisites in double quotes
         // if (!prerequisitesString.isEmpty()) {
         //     prerequisitesString = "\"" + prerequisitesString + "\"";
         // }
-        return credits + "," + courseCode + "," + prerequisites + "," + lecturerID;
+        return credits + "," + courseCode + "," + prerequisites;
     }
+    
 }
-
