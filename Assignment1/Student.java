@@ -1,11 +1,9 @@
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
@@ -33,8 +31,8 @@ public class Student extends User {
             if (selectedCourse != null) {
                 boolean studentAlreadyRegistered = registeredCourses.contains(selectedCourseCode);
                 // check credit hours
-                // if (!checkCreditHours(selectedCourseCode, this.userID))
-                //     break;
+                if (!checkCreditHours(selectedCourseCode, this.userID))
+                    break;
                 // check prerequisites
                 if (!checkPreRequisites(selectedCourseCode, this.userID))
                     break;
@@ -178,7 +176,7 @@ public class Student extends User {
 
             // Write the updated content back to the file
             Files.write(Paths.get("student.csv"), updatedLines);
-            System.out.println("Course added successfully for student: " + studentId);
+            //System.out.println("Course added successfully for student: " + studentId);
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }

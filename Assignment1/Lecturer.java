@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Lecturer extends User {
-    List<Student> studentsInCourse;
+    List<Student> studentsInCourse = new ArrayList<>();
 
     public Lecturer(String userID, String password) {
         super(userID, password);
@@ -26,12 +26,11 @@ public class Lecturer extends User {
         boolean assignedToCourse = false;
        
         for (Course course : courses) {
-            if (course.assignedLecturer.equals(this)) {
+            if (course.assignedLecturer != null && course.assignedLecturer.userID.equals(this.userID)) {
                 assignedToCourse = true;
                 System.out.println(course.courseCode);
             }
         }
-
         if (!assignedToCourse) {
             System.out.println("No Assigned Courses.\n");
             return;
@@ -39,12 +38,12 @@ public class Lecturer extends User {
 
         System.out.print("Enter the Course Code to view students: ");
         String courseCode = scanner.next().toUpperCase();
-
+        studentsInCourse = getStudentsInCourse(courseCode);
         Course course = findCourse(courses, courseCode);
 
         if (course != null) {
             System.out.println("Student List for Course " + courseCode + ":");
-                if (course.assignedLecturer.equals(this)) {
+                if (course.assignedLecturer.userID.equals(this.userID)) {
                     for (Student student : this.studentsInCourse) {
                         if (student.registeredCourses.contains(courseCode)) {
                             System.out.println(student.userID);
@@ -98,4 +97,32 @@ public class Lecturer extends User {
             System.err.println("Error: " + e.getMessage());
         }
     }
+
+    public static Lecturer fromString(String str) {
+        String[] parts = str.split(":");
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("Invalid string format for Lecturer: " + str);
+        }
+        String userID = parts[0].trim();
+        String name = parts[1].trim();
+        return new Lecturer(userID, name);
+    }
+
+    public List<Student> getStudentsInCourse(String courseCode) {
+        studentsInCourse = new ArrayList<>();
+        try {
+            List<String> lines = Files.readAllLines(Paths.get("student.csv"));
+            for (String line : lines) {
+                String[] items = line.split(",");
+                for (int i = 2; i < items.length; i++) {
+                    if (items[i].equals(courseCode))
+                        studentsInCourse.add(new Student(items[0], null));
+                }
+            }
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return studentsInCourse;
+    }
 }
+

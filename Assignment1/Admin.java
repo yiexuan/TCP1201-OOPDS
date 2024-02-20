@@ -146,16 +146,24 @@ public class Admin extends User {
 
             if (selectedLecturer != null) {
                 validLecturer = true;
+
+               // boolean lecturerAlreadyAssigned = selectedCourse.assignedLecturer.equals(selectedLecturer);
                 if (selectedCourse.assignedLecturer == null) {
+                //if (!(selectedCourse.assignedLecturer.equals(selectedLecturer))){
                     selectedCourse.assignedLecturer = selectedLecturer;
 
-                    // courses.add(selectedCourse);
+                    //courses.add(selectedCourse);
                     //saveCourseToCourseFile(courses);
                     addCourseToLecturerFile(selectedLecturer.userID, selectedCourse);
                     System.out.println("A course has been assigned to Lecturer " + lecturerID + "\n");
-                } else if (selectedCourse.assignedLecturer.equals(selectedLecturer))
+                } 
+                else if (selectedCourse.assignedLecturer.userID.equals(selectedLecturer.userID))
                     System.out.println("Course already assigned to this lecturer\n");
-            } else {
+                else
+                    System.out.println("The course has already assigned to another lecturer.\n");
+            //}
+            } 
+            else {
                 System.out.println("Lecturer not found. Please try again.\n");
             }
         }
@@ -319,7 +327,7 @@ public class Admin extends User {
     // System.out.println(ex.getMessage());
     // }
     // }
-    public static void addCourseToLecturerFile(String lecturerId, Course course) {
+    public static void addCourseToLecturerFile(String lecturerId, Course course) {  
         try {
             List<String> lines = Files.readAllLines(Paths.get("lecturer.csv"));
             List<String> updatedLines = new ArrayList<>();
@@ -341,7 +349,7 @@ public class Admin extends User {
 
             // Write the updated content back to the file
             Files.write(Paths.get("lecturer.csv"), updatedLines);
-            System.out.println("Course added successfully for lecturer: " + lecturerId);
+            //System.out.println("Course added successfully for lecturer: " + lecturerId);
         } catch (IOException e) {
             System.err.println("Error: " + e.getMessage());
         }
